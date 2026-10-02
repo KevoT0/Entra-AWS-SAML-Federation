@@ -53,25 +53,25 @@ In Entra, the **AWS Single-Account Access** application is configured for SAML s
 
 In AWS IAM, an **Identity Provider** named `EntraID` is created by uploading Entra's federation metadata (its certificate and sign-in address). This is AWS saying *"I will trust assertions signed by this Entra tenant."*
 
-![AWS IAM SAML Identity Provider trusting Entra](2.png)
+![AWS IAM SAML Identity Provider trusting Entra](4.png)
 
 ### 3. AWS side — a least-privilege role for federated users
 
 An IAM role, **`EntraID-ReadOnly`**, is created with a trust policy that allows the EntraID provider to assume it via SAML, and a **read-only** permissions policy. Federated users get the minimum access needed — not standing admin.
 
-![IAM role EntraID-ReadOnly with least-privilege policy](3.png)
+![IAM role EntraID-ReadOnly with least-privilege policy](5.png)
 
 ### 4. Linking the two sides — role assignment in Entra
 
 Entra reads the AWS role automatically (via provisioning), and the user is assigned to it. The assigned value — **`EntraID-ReadOnly,EntraID`** — is the **role ARN + provider ARN** pair that AWS needs in the assertion to know which role to grant.
 
-![User assigned the federated role in Entra](4.png)
+![User assigned the federated role in Entra](7.png)
 
 ### 5. The proof — logged into AWS with no AWS password
 
 Signing in through Entra (with MFA) lands directly in the **AWS Management Console**. The identity shown top-right — **`EntraID-ReadOnly/KevinTosin@...`** — is in `role/username` format, the signature of a **federated** session: authenticated by Entra, authorised into a short-lived AWS role, with no AWS credential involved.
 
-![Logged into the AWS console as the federated EntraID-ReadOnly role](5.png)
+![Logged into the AWS console as the federated EntraID-ReadOnly role](9.png)
 
 This is the whole point made visible: cloud access without a standing cloud credential — the thing whose absence destroyed Code Spaces.
 
